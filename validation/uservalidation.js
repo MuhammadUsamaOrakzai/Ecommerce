@@ -1,0 +1,21 @@
+const joi = require('@hapi/joi');
+
+
+// this validation checks data of user when creating an account
+const userRegisterValidation = joi.object({
+    name: joi.string().min(4).max(55).required(),
+    email: joi.string().email().required(),
+    password: joi.string().lowercase().uppercase(1).regex(/^[a-zA-Z0-9!@#$%&*]{3,30}$/),
+});
+
+// this validation checks data of user when loging in
+const userLoginValidation = joi.object({
+        email: joi.string().email().required(),
+        password: joi.string().min(8).max(26).lowercase().uppercase(),
+    });
+
+
+module.exports.userRegisterValidation = userRegisterValidation;
+module.exports.userLoginValidation = userLoginValidation;
+
+
