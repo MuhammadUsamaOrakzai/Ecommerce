@@ -1,15 +1,22 @@
-const Category = require('../model/category')
+const Category = require('../model/category');
 const slugify = require('slugify');
+const categoryValidation = require('../validation/categoryvalidation');
 
 
-exports.createCategory =  (req, res) => {
+exports.createCategory = (req, res) => {
+
+    const { error } =  categoryValidation.validate(req.body);
+          if (error) return res.status(400).send(error.details[0].message);
+
+          const categoryExist = Category.findOne({name: req.body.name});
+          if(categoryExist) return res.status(400).send('Category already exists');
+
+
     const categoryObj = {
         name: req.body.name,
         slug: slugify(req.body.name)
     }
-    if(req.body.parentId){
-        categoryObj.parentId = req.body.parentId;
-    }
+
     const cat = new Category(categoryObj);
     cat.save((error, category) => {
         if(error) return res.status(400).send({ error});
